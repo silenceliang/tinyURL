@@ -16,11 +16,11 @@
   <body class="text-center">
     <div class="form-signin">
       <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+      <h1 class="h3 mb-3 font-weight-normal">Please key in</h1>
+      <label for="input_url" class="sr-only">INPUT</label>
+      <input type="email" id="input_url" class="form-control" placeholder="Input url" required autofocus>
+      <label for="output_url" class="sr-only">OUTPUT</label>
+      <div id="output_url" class="form-control" placeholder="short url" required></div>
       <button class="turn2url btn btn-lg btn-primary btn-block">Transpose</button>
     </div>
   </body>
@@ -29,15 +29,17 @@
     const submit_btn = document.querySelector('button');
     submit_btn.addEventListener('click', e => {
         if(e.target.classList.contains('turn2url')){
-            const entry = document.getElementById('inputEmail').value;
+            const entry = document.getElementById('input_url').value;
             fetch('shortURL', {
                 method:'POST',
                 body:JSON.stringify(entry),
                 headers:{'Content-Type':'application/json'}
-            }).then(function(response){
-                return response.json();
-            }).then(function(data){
-                console.log('success');
+            }).then(res => res.json())
+              .then(function(res){
+                alert(res['key']);
+                console.log(document.getElementById('output_url'));
+                document.getElementById('output_url').innerHTML ="<a href="+res['key']+">" + res['key'] + "</a>";
+                console.log(res);
             })
     }});
 </script>

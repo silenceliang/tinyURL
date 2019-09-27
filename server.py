@@ -55,13 +55,12 @@ fun = TinyURL()
 
 @app.route('/shortURL', methods=['POST'])
 def short_request():
-    ServerPrefix = "http://localhost:" + str(5002) + "/"
     url = request.get_json()
     print('input url:', url)
     print('ready for encoding ...')
     url_key = fun.encode(url)
     print('after encoding: ', url_key)
-    return  ServerPrefix + url_key
+    return  {'key':url_key}
 
 @app.route('/<url_key>')
 def redir(url_key):
