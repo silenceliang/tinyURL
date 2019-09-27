@@ -4,21 +4,36 @@ from flask import Flask, render_template, redirect
 from flask import request
 app = Flask(__name__)
 
-class Redis(object):
+class TinyURLRedis(object):
     def __init__(self, host='localhost', port=6379,password=''):
+        self.letters = string.ascii_letters + string.digits
+        self.global_counter = 0
         try:
             self.r = redis.StrictRedis(host=host, port=port,password=password)
         except Exception as e:
             print(e)
+
+    def encode(self, longUrl):
+        def decTo62(dec):
+            result = ""
+            while 1:
+                result = self.letters[dec % 62] + result
+                dec //= 62
+                if not dec: break
+            return result
+        ServerPrefix = "http://localhost/"
+        suffix = decTo62(self.global_counter)
+        if self.r.get(suffix):
+            self.r.set(suffix, longUrl)
+            self.global_counter += 1
+        return ServerPrefix + suffix
     
-    def _put(self, key, value):
-        return self.r.set(key,value)
-    
-    def _get(self, key):
-        if self.r.get(key):
-            return self.r.get(key)
+    def decode(self, shortUrl):
+        idx = shortUrl.split('/')[-1]
+        if self.r.get(idx):
+            return self.r.get(idx)
         else:
-            return "Not exist this URL !! "
+            return "Not exists such a url link"
 
 class TinyURL(object):
     letters = string.ascii_letters + string.digits
@@ -51,19 +66,19 @@ class TinyURL(object):
         else:
             return "Not exists such a url link"
 
-fun = TinyURL()
+# fun = TinyURL()
+fun = TinyURLRedis()
 
 @app.route('/shortURL', methods=['POST'])
 def short_request():
-    ServerPrefix = "http://localhost:" + str(5002) + "/"
     url = request.get_json()
     print('input url:', url)
     print('ready for encoding ...')
-    url_key = fun.encode(url)
-    print('after encoding: ', url_key)
-    return  ServerPrefix + url_key
+    url = fun.encode(url)
+    print('after encoding: ', url)
+    return  url
 
-@app.route('/<url_key>')
+@app.route('/specify/<url_key>')
 def redir(url_key):
     url = fun.decode(url_key)
     print(url)
