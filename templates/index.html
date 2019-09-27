@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Signin Template for Bootstrap</title>
+    <title>TinyURL Demo</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -36,10 +36,7 @@
                 headers:{'Content-Type':'application/json'}
             }).then(res => res.json())
               .then(function(res){
-                alert(res['key']);
-                console.log(document.getElementById('output_url'));
                 document.getElementById('output_url').innerHTML ="<a href="+res['key']+">" + res['key'] + "</a>";
-                console.log(res);
             })
     }});
 </script>
