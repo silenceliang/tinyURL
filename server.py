@@ -1,14 +1,16 @@
+import argparse
 import string
 import redis
 from flask import Flask, render_template, redirect
 from flask import request
 app = Flask(__name__)
 
+
 class TinyURLRedis(object):
     def __init__(self, host='localhost', port=6379,password=''):
-        self.letters = string.ascii_letters + string.digits
         try:
-            self.r = redis.StrictRedis(host=host, port=port,password=password)
+            pool = redis.ConnectionPool(host=host, port=port)
+            self.r = redis.StrictRedis(connection_pool=pool)
         except Exception as e:
             print(e)
 
@@ -60,10 +62,16 @@ class TinyURL(object):
             return self.tiny_full[idx]
         else:
             return "Not exists such a url link"
-''' Using hashTable (leetcode) '''
-# fun = TinyURL()
-''' Using Redis '''
-fun = TinyURLRedis()
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--redis", default=True, action='store_true', help='using NoSQL-redis/hshTable for data saving.')
+args = parser.parse_args()
+
+if args.redis:
+    fun = TinyURLRedis()  
+else:
+    fun = TinyURL()
 
 @app.route('/shortURL', methods=['POST'])
 def short_request():
