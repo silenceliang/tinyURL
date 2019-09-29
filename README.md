@@ -9,3 +9,5 @@ A project about how to transform a long url to shorter one is implemented here. 
 1. Flask framework
 2. NoSQL Redis 
 
+## Snapshot
+![](https://i.imgur.com/mFSU28V.png)
