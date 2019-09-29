@@ -18,9 +18,11 @@
       <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
       <h1 class="h3 mb-3 font-weight-normal">Please key in</h1>
       <label for="input_url" class="sr-only">INPUT</label>
-      <input type="email" id="input_url" class="form-control" placeholder="Input url" required autofocus>
+      <input id="input_url" class="form-control" placeholder="Input url" required autofocus>
+      <input id="specification" class="form-control" placeholder="Input specify key" required autofocus>
       <label for="output_url" class="sr-only">OUTPUT</label>
       <div id="output_url" class="form-control" placeholder="short url" required></div>
+
       <button class="turn2url btn btn-lg btn-primary btn-block">Transpose</button>
     </div>
   </body>
@@ -28,16 +30,28 @@
   <script type="text/javascript">
     const submit_btn = document.querySelector('button');
     submit_btn.addEventListener('click', e => {
-        if(e.target.classList.contains('turn2url')){
+        if(e.target && e.target.matches('button.turn2url')){
             const entry = document.getElementById('input_url').value;
-            fetch('shortURL', {
-                method:'POST',
-                body:JSON.stringify(entry),
-                headers:{'Content-Type':'application/json'}
-            }).then(res => res.json())
-              .then(function(res){
-                document.getElementById('output_url').innerHTML ="<a href="+res['key']+">" + res['key'] + "</a>";
-            })
-    }});
+            const spc = document.getElementById('specification').value;
+            var url = 'shortURL';
+            try{
+                if(spc){
+                    url = 'specify/'+spc;
+                }
+                fetch(url, {
+                    method:'POST',
+                    body:JSON.stringify(entry),
+                    headers:{'Content-Type':'application/json'}
+                }).then(res => res.json())
+                .then(function(res){
+                    document.getElementById('output_url').innerHTML ="<a href="+res['key']+">" + res['key'] + "</a>";
+                })
+                
+            }
+            catch(err){
+                console.log(err);
+            }
+            e.stopPropagation();
+    }}, true);
 </script>
 </html>
