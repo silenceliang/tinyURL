@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 
 class TinyURLRedis(object):
-    def __init__(self, host='localhost', port=6379,password=''):
+    def __init__(self, host='0.0.0.0', port=6379,password=''):
         try:
             pool = redis.ConnectionPool(host=host, port=port)
             self.r = redis.StrictRedis(connection_pool=pool)
@@ -68,7 +68,7 @@ class TinyURL(object):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--redis", default=True, action='store_true', help='using NoSQL-redis/hshTable for data saving.')
-parser.add_argument("--ip", default='localhost', help='server ip.')
+parser.add_argument("--ip", default='0.0.0.0', help='server ip.')
 parser.add_argument("--port", default=5002, help='server port.')
 args = parser.parse_args()
 fun = TinyURLRedis() if args.redis else TinyURL()
